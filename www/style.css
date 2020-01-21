@@ -1,0 +1,27 @@
+#cards {
+	float: left;
+	display: inline;
+}
+
+.dice-image {
+	width: 60px;
+	float: left;
+	padding: 10px 10px 10px 10px;
+}
+
+.mine-button {
+	display: none;
+}
+
+.first-card-button {
+	display: none;
+}
+
+.second-card-button {
+	display: none;
+}
+
+.player-scores {
+	font-size: 20px;
+}
+

@@ -1,0 +1,40 @@
+mod utils;
+mod blockchains;
+mod cards;
+use rand::prelude::*;
+
+use wasm_bindgen::prelude::*;
+
+// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
+// allocator.
+#[cfg(feature = "wee_alloc")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+#[wasm_bindgen]
+extern {
+    fn alert(s: &str);
+}
+
+#[wasm_bindgen]
+pub fn greet() {
+    alert("Hello, to-the-moon!");
+}
+
+fn roll() -> usize {
+    //subtracts the number of miners from the number 10 and creates a random number between
+    //1*(#dice) and 6*(#dice)
+    //eventually return individual numbers to generate dice roll animations
+    thread_rng().gen_range(1, 6)
+}
+
+pub fn roll_dice(current_player: blockchains::BlockChain) -> bool {
+    // subtract number of miners from number 10, roll die that many times and save results in a Vec
+    let rolls = [roll()].repeat(10-current_player.miners); 
+    println!("{:?}", rolls);
+    true
+}
+
+pub fn draw_card(ctype: String) -> cards::Card {
+    cards::Card::new("stuff".to_string(), "stuff".to_string(), 3)//temporary card, need to return a random card upon drawing
+}
