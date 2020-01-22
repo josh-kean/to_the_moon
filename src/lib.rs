@@ -2,9 +2,8 @@ mod utils;
 mod blockchains;
 mod cards;
 
-use std::time::SystemTime;
 use wasm_bindgen::prelude::*;
-use rand::{thread_rng, Rng};
+use rand::{Rng};
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -18,7 +17,6 @@ pub struct Game {
     current_player: usize,
     cards_round_1: Vec<cards::Card>,
     cards_round_2: Vec<cards::Card>,
-    current_turn_mine: bool, //each turn has a block mining session. always starts out as false
 }
 
 //want to have two impls on Game struct. One for fcns exported to JS, one for internal fcns
@@ -46,9 +44,9 @@ impl Game {
 
     fn adjust_price(&mut self) { //every 3rd consecutive block increase price
         if self.players[self.current_player].blocks_in_row%3 == 0 {
-            self.players[self.current_player].price *= (1.0+(self.players[self.current_player].blocks_in_row as f32)/30.0);
+            self.players[self.current_player].price *= 1.0+(self.players[self.current_player].blocks_in_row as f32)/30.0;
         } else if self.players[self.current_player].failed_blocks%3 == 0{
-            self.players[self.current_player].price *= (1.0-(self.players[self.current_player].failed_blocks as f32)/30.0);
+            self.players[self.current_player].price *= 1.0-(self.players[self.current_player].failed_blocks as f32)/30.0;
         } else {
             panic!("unknown situation");
         }
@@ -58,61 +56,67 @@ impl Game {
         self.players.len()
     }
 
-    fn shuffle_cards(deck: Vec<cards::Card>) -> cards::Card {
-        //code to randomly select one card and return said card
-        //temporarily returning a card just so program won't yell at me
-        cards::Card::new(1,1,1)
-    }
-
     fn apply_card(&mut self, card: cards::Card) {
         if card.attribute == 0 {
-            if self.players[self.current_player].height + (card.change as u32) > 0 {
+             if card.change < 0.0 {
+                if card.change*-1.0 > self.players[self.current_player].height as f64 {
+                    self.players[self.current_player].height = 1;
+                } else {
+                    self.players[self.current_player].height -= card.change as u32;
+                }
+             } else {
                 self.players[self.current_player].height += card.change as u32;
-            } else {
-                self.players[self.current_player].height = 1;
-            }
+                }
         } else if card.attribute == 1 {
-            if self.players[self.current_player].difficulty + (card.change as usize) > 0 {
+             if card.change < 0.0 {
+                if card.change*-1.0 > self.players[self.current_player].difficulty as f64{
+                    self.players[self.current_player].difficulty = 1;
+                } else {
+                    self.players[self.current_player].difficulty -= card.change as usize;
+                }
+             } else {
                 self.players[self.current_player].difficulty += card.change as usize;
-            } else {
-                self.players[self.current_player].difficulty = 1;
-            }
+                }
         } else if card.attribute == 2 {
-            if self.players[self.current_player].miners + (card.change as usize) > 0 {
+             if card.change < 0.0 {
+                if card.change*-1.0 > self.players[self.current_player].miners as f64{
+                    self.players[self.current_player].miners = 1;
+                } else {
+                    self.players[self.current_player].miners -= card.change as usize;
+                }
+             } else {
                 self.players[self.current_player].miners += card.change as usize;
-            } else {
-                self.players[self.current_player].miners = 1;
+                if self.players[self.current_player].miners > 9 {
+                    self.players[self.current_player].miners = 9;
+                }
             }
         } else if card.attribute == 3 {
-            if self.players[self.current_player].price + (card.change as f32) > 0.0 {
+             if card.change < 0.0 {
+                if card.change*-1.0 > self.players[self.current_player].price as f64{
+                    self.players[self.current_player].price = 1.0;
+                } else {
+                    self.players[self.current_player].price -= card.change as f32;
+                }
+             } else {
                 self.players[self.current_player].price += card.change as f32;
-            } else {
-                self.players[self.current_player].price = 1.0;
-            }
+                }
         } else {
             panic!("card input is not valid");
         }
     }
 
-    //takes in the rolled result, compares to mining requirement, and outputs if a block was mined
-    //or not
-    fn mine_block(&mut self, roll: usize) -> bool {
-        if roll < self.players[self.current_player].difficulty {
-            self.players[self.current_player].height +=1;
-            self.players[self.current_player].price +=1.0; //change back to blocks_in_row
-            true
-        } else {
-            false
-        }
+    fn next_player(&mut self) {
+        self.players[self.current_player].mine_attempts = 0;
+        self.current_player = (self.current_player+1)%self.players.len() as usize;
+        self.players[self.current_player].mine_attempts = 0; //reset mining count
     }
-
 }
 
 fn rando_num(range: usize) -> usize {
     let n: usize;
     let mut num = rand::thread_rng();
-    n = num.gen_range(1, range).clone();
-    n
+    n = num.gen_range(0, range).clone();
+    n+1
 }
 
 //this impl exports all function to JS
@@ -125,12 +129,15 @@ impl Game {
             current_player: 0,
             cards_round_1: cards::Card::cards(),
             cards_round_2: cards::Card::special_cards(),
-            current_turn_mine: false,
         }
     }
 
     pub fn set_players(&mut self, num_players: usize) { //js provides amount of players
         self.players = Game::make_players(num_players as usize);
+    }
+
+    pub fn get_current_player(&self) -> usize {
+        self.current_player
     }
 
     pub fn get_players(&self) -> usize { //returns number of players in the game
@@ -142,11 +149,8 @@ impl Game {
     }
 
     pub fn player_prices(&mut self) -> Vec<f32> {
-        let mut prices: Vec<f32> = Vec::new();
-        for p in self.players.iter() {
-            prices.push(p.price);
-        }
-        //replace with iterator that does for loop in one line
+        let prices: Vec<f32>;
+        prices =self.players.iter().map(|x| x.price).collect();
         prices
     }
 
@@ -155,7 +159,7 @@ impl Game {
         let mut roll: Vec<usize> = Vec::new();
         let mut x: usize = 0;
         while x <= 10 - self.players[self.current_player].miners { //only roll 10-num miners dice
-            roll.push(rando_num(7));
+            roll.push(rando_num(6));
             x +=1
         }
         let roll_result: usize = roll.iter().sum(); //returns the sum of all dice rolled
@@ -165,6 +169,7 @@ impl Game {
             self.players[self.current_player].blocks_in_row = 0;
             self.players[self.current_player].failed_blocks += 1;
             self.adjust_price();
+            self.next_player();
             [0].to_vec()
         } else if result {
             self.adjust_price();
@@ -180,21 +185,19 @@ impl Game {
     }
 
     pub fn draw_card(&mut self, round: usize) -> usize {
-        let n = rando_num(3);
+        let n = rando_num(9)-1;
         let card = match round {
-            0 => self.cards_round_1[0],
-            1 => self.cards_round_2[0],
+            0 => self.cards_round_1[n],
+            1 => self.cards_round_2[n],
             _ => { panic!("not a proper round")},
         };
         self.apply_card(card);
+        if round == 1 {
+            self.next_player();
+        }
         card.event
     }
 
-    pub fn next_player(&mut self) {
-        self.players[self.current_player].mine_attempts = 0;
-        self.current_player = (self.current_player+1)%self.players.len() as usize;
-        self.players[self.current_player].mine_attempts = 0; //reset mining count
-    }
 
 }
 //only the turn function, draw_card function, and roll_dice function should be publicly available.

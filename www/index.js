@@ -36,6 +36,12 @@ function player_div_elements(n) {
 	}
 }
 
+function current_player() {
+	let cp = document.querySelector('.current-player');
+	let current = game.get_current_player();
+	cp.innerHTML = `<h1>current player ${blockNames[current]}</h1>`;
+}
+
 
 //function to pass number of players into game element
 function set_players(players) {
@@ -44,7 +50,6 @@ function set_players(players) {
 	} else {
 		game.set_players(players); //calls rust function that creates vector of players
 		player_div_elements(players);
-		console.log('div elements set');
 	}
 }
 
@@ -61,10 +66,11 @@ function playerScores() {
 function pullCard(round) {
 	playerScores();
 	let card = game.draw_card();
-	drawCards(card); //placeholder for now. eventually pass in drawn cards value
+	drawCards(round, card); //placeholder for now. eventually pass in drawn cards value
 }
 
 function firstRound() {
+	current_player();
 	let height = playerBlockHeights();
 	playerBlocks(game.get_players(), height);
 	cardBtn1.style.display="none";
@@ -75,7 +81,6 @@ function firstRound() {
 
 function secondRound() {
 	pullCard(1);
-	game.next_player();
 	firstRound();
 }
 
@@ -83,9 +88,7 @@ function mineBlock() {
 	//game.mine will return dice if successful mining
 	playerScores();
 	let dice = game.mine();
-	console.log(dice);
 	if (dice[0] === 0) {
-		game.next_player();
 		cardBtn1.style.display="inline"
 		mineBtn.style.display="none";
 		cardBtn2.style.display="none";
@@ -117,11 +120,8 @@ function main_game() {
 	//step3: players mines block
 	//step4: if player mines block, draw second card, else end turn and update current player
 	playerScores();
-	drawCards(-1);
+	drawCards(0, -1);
 	playerBlocks(game.get_players(), height);
-//	mineBlock();
-//	secondCards();
-//	main_game()
 }
 
 const game_setup = () => {
