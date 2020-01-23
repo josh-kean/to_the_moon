@@ -29,8 +29,8 @@ impl Card {
 
     pub fn cards() -> Vec<Card> {
         let mut cards = Vec::new();
-        cards.push(Card::new(1,0,1.0));
-        cards.push(Card::new(2,1,1.0));
+        cards.push(Card::new(1,3,1.1));
+        cards.push(Card::new(2,3,0.80));
         cards.push(Card::new(3,2,1.0));
         cards.push(Card::new(4,3,1.0));
         cards.push(Card::new(5,0,1.0));

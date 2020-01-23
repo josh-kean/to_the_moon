@@ -91,15 +91,7 @@ impl Game {
                 }
             }
         } else if card.attribute == 3 {
-             if card.change < 0.0 {
-                if card.change*-1.0 > self.players[self.current_player].price as f64{
-                    self.players[self.current_player].price = 1.0;
-                } else {
-                    self.players[self.current_player].price -= card.change as f32;
-                }
-             } else {
-                self.players[self.current_player].price += card.change as f32;
-                }
+            self.players[self.current_player].price *=card.change;
         } else {
             panic!("card input is not valid");
         }
@@ -134,6 +126,23 @@ impl Game {
 
     pub fn set_players(&mut self, num_players: usize) { //js provides amount of players
         self.players = Game::make_players(num_players as usize);
+    }
+
+    //keeping all get functions seperate for clarity
+    pub fn get_difficulty(&self) -> usize {
+        self.players[self.current_player].difficulty
+    }
+
+    pub fn get_mine_attempts(&self) -> u32 {
+        self.players[self.current_player].mine_attempts
+    }
+
+    pub fn get_blocks_in_row(&self) -> usize {
+        self.players[self.current_player].blocks_in_row
+    }
+
+    pub fn get_failed_blocks(&self) -> usize {
+        self.players[self.current_player].failed_blocks
     }
 
     pub fn get_current_player(&self) -> usize {

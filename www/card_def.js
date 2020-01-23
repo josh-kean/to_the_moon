@@ -1,7 +1,7 @@
 let round1 = {
-	1: "The country of kekistan's currency implodes.\nPrice goes up 50$",
-	2: "A meme on twitter dissing your coin goes viral.\m Price goes down 200$",
-	3: "The UN makes a news statement aout your coin.\n Price goes up 8$",
+	1: "The country of kekistan's currency implodes.\nPrice goes up 10%",
+	2: "A meme on twitter dissing your coin goes viral.\m Price goes down 20%",
+	3: "The UN makes a news statement aout your coin.\n You get a new miner",
 	4: "Walmart accepts crypto payments.\n Price goes up 200$",
 	6: "A book was published about your cryptocurrency.\n price goes up 5$",
 	7: "easy card 7.\n price goes up 5$",
