@@ -1,5 +1,15 @@
 //function that intakes number of blocks and prints that ammount
 //provide an object containing player number and blocks
+
+export function playerBlocks(game) {
+	clearTarget(screen);
+	let players = game.get_players();
+	makePlayerLines(players, game);
+	populateLines(players, game); 
+}
+
+let screen = document.querySelector('.blockScreen');
+
 let blockFiles = {
 	0: "./blocks/image0.png",
 	1: "./blocks/image1.png",
@@ -14,20 +24,40 @@ let blockNames = {
 	3: "Litecoin",
 }
 
-function makeBlocks(l, player, height) {
-	let c = ".player"+player;
-	let line = document.querySelector(c);
-	line.innerHTML = '';
-	for (let i = 0; i < height[player]; i++) { //display images next to eachother
-		line.innerHTML += `<image className="block-image-{player}-{i}" src="${blockFiles[player]}" width="100" height="100" hspace="10" vspace="10"></image>`;
+function makePlayerLines(players) {
+	for (let i = 0; i < players; i++) {
+		let line = document.createElement('div');
+		line.setAttribute('class', `player${i}`);
+		screen.appendChild(line);
+	}
+}
+
+function clearTarget(target) {
+	while (target.lastChild) {
+		target.removeChild(target.lastChild);
 	}
 }
 
 
-export function playerBlocks(players, heights) {
-	let sides = 50; 
+function makeBlocks(player, height) { //get player height and add blocks
+	let line = document.querySelector(`.player${player}`);
+	for (let i = 0; i < height; i++) { //display images next to eachother
+		let block = document.createElement('IMG');
+		block.setAttribute('class', `player${player}`);
+		block.setAttribute('src', `${blockFiles[player]}`);
+		block.setAttribute('width', '100');
+		block.setAttribute('height', '100');
+		block.setAttribute('hspace', '10');
+		block.setAttribute('vspace', '10');
+		line.appendChild(block);
+	}
+}
+
+function populateLines(players, game) {
 	for (let p = 0; p < players; p++) {
-		makeBlocks(sides, p, heights);
+		let height = game.player_height(p);
+		makeBlocks(p, height);
 	}
 }
 
+//change this to function that imports game object and renders items to screen

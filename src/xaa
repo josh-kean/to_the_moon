@@ -12,6 +12,7 @@ export function drawDice(dice) {
 	canvas.innerHTML = '';
 
 	for (let p = 0; p < dice.length; p++) {
+		console.log(dice.length);
 		canvas.innerHTML += `<image className="dice-image" src="${diceFiles[dice[p]]}" width="50" height="50" hspace="10"></image>`;
 	}
 }

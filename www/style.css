@@ -1,27 +1,83 @@
-#cards {
+.cardButton1, .cardButton2, .cardPull, .playerInfo, .mineButton, .blockScreen {
+	visibility: hidden;
+}
+
+.headboard {
+	display: flex;
+	color: firebrick;
+	font-style: italic;
+	text-decoration: underline;
+	font-size: 2.5em;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding-top: 10px;
+}
+
+.playerInfo, .miningScreen, .cardPull, .blockScreen {
+	display: grid;
+	grid-template-columns: auto;
+	padding: 10px;
+}
+
+.mineButton, .cardButton1, .cardButton2 {
+	width: 100px;
+	height: 50px;
+}
+
+.miningScreen {
+	height: 100px;
+	width: 1000px;
+	justify-content: center;
+	text-align: center;
+	visibility: hidden;
+	margin: 10px;
+}
+
+.cardPull {
+	height: 100px;
+	margin: 10px;
+}
+
+.playerDescription {
+	font-size: 30px;
+}
+
+
+.contain {
 	float: left;
-	display: inline;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding-top: 10px;
 }
 
-.dice-image {
-	width: 60px;
-	float: left;
-	padding: 10px 10px 10px 10px;
+.setPlayers {
+	left: 50%;
+	text-align: center;
+	justify-content: center;
+	display: grid;
+	grid-template-columns: 100px 100px;
+	grid-gap: 10px;
 }
 
-.mine-button {
-	display: none;
+.playerSelectC {
+	grid-row: 1;
+	grid-column:1,
 }
 
-.first-card-button {
-	display: none;
+.setPlayerButton{
+	grid-row: 1;
+	grid-column:2,
 }
 
-.second-card-button {
-	display: none;
+.playerSelectC, .setPlayerButton, .mineButton, .cardButton1, .cardButton2 {
+	border-radius: 5px;
+	background-color: orange;
+	border: 2px solid red;
 }
 
-.player-scores {
-	font-size: 20px;
+body {
+	background-color: lightblue;
 }
-

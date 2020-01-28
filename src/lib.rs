@@ -45,8 +45,16 @@ impl Game {
     fn adjust_price(&mut self) { //every 3rd consecutive block increase price
         if self.players[self.current_player].blocks_in_row%3 == 0 {
             self.players[self.current_player].price *= 1.0+(self.players[self.current_player].blocks_in_row as f32)/30.0;
+            self.players[self.current_player].difficulty -= ((self.players[self.current_player].difficulty as f32)/6.0) as usize ;
+            if self.players[self.current_player].miners < 10 {
+                self.players[self.current_player].miners -= 1;
+            }
         } else if self.players[self.current_player].failed_blocks%3 == 0{
             self.players[self.current_player].price *= 1.0-(self.players[self.current_player].failed_blocks as f32)/30.0;
+            self.players[self.current_player].difficulty += ((self.players[self.current_player].difficulty as f32)/6.0) as usize ;
+            if self.players[self.current_player].miners > 0 {
+                self.players[self.current_player].miners += 1;
+            }
         } else {
             panic!("unknown situation");
         }
@@ -91,7 +99,7 @@ impl Game {
                 }
             }
         } else if card.attribute == 3 {
-            self.players[self.current_player].price *=card.change;
+            self.players[self.current_player].price *=card.change as f32;
         } else {
             panic!("card input is not valid");
         }
@@ -163,11 +171,15 @@ impl Game {
         prices
     }
 
+    pub fn get_current_price(&self) -> f32 {
+        self.players[self.current_player].price
+    }
+
     //todo: replace current_player to be a usize that points to current player in vec
     pub fn mine(&mut self) -> Vec<usize> {
         let mut roll: Vec<usize> = Vec::new();
         let mut x: usize = 0;
-        while x <= 10 - self.players[self.current_player].miners { //only roll 10-num miners dice
+        while x < 10 - self.players[self.current_player].miners { //only roll 10-num miners dice
             roll.push(rando_num(6));
             x +=1
         }
@@ -200,6 +212,7 @@ impl Game {
             1 => self.cards_round_2[n],
             _ => { panic!("not a proper round")},
         };
+
         self.apply_card(card);
         if round == 1 {
             self.next_player();
