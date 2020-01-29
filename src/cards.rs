@@ -29,29 +29,29 @@ impl Card {
 
     pub fn cards() -> Vec<Card> {
         let mut cards = Vec::new();
-        cards.push(Card::new(1,3,10.0));
+        cards.push(Card::new(1,3,1.05));
         cards.push(Card::new(2,2,1.0));
         cards.push(Card::new(3,0,-1.0));
         cards.push(Card::new(4,1,10.0));
-        cards.push(Card::new(5,0,-20.0));
-        cards.push(Card::new(6,3,50.0));
+        cards.push(Card::new(5,3,0.90));
+        cards.push(Card::new(6,3,1.20));
         cards.push(Card::new(7,2,-1.0));
-        cards.push(Card::new(8,3,-30.0));
+        cards.push(Card::new(8,3,0.70));
         cards.push(Card::new(9,0,3.0));
         cards
     }
 
     pub fn special_cards() -> Vec<Card> {
         let mut special_cards = Vec::new();
-        special_cards.push(Card::new(1,3,-100.0));
+        special_cards.push(Card::new(1,3,0.70));
         special_cards.push(Card::new(2,2,-1.0));
-        special_cards.push(Card::new(3,3,300.0));
+        special_cards.push(Card::new(3,3,1.30));
         special_cards.push(Card::new(4,2,-2.0));
-        special_cards.push(Card::new(5,3,-100.0));
-        special_cards.push(Card::new(6,3,500.0));
+        special_cards.push(Card::new(5,3,0.90));
+        special_cards.push(Card::new(6,3,1.40));
         special_cards.push(Card::new(7,2,-10.0));
         special_cards.push(Card::new(8,2,10.0));
-        special_cards.push(Card::new(9,0,1.0));
+        special_cards.push(Card::new(9,3,0.50));
         special_cards
 }
 
