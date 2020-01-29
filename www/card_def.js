@@ -1,24 +1,25 @@
 let round1 = {
-	1: "The country of kekistan's currency implodes.\nPrice goes up 10%",
-	2: "A meme on twitter dissing your coin goes viral.\m Price goes down 20%",
-	3: "The UN makes a news statement aout your coin.\n You get a new miner",
-	4: "Walmart accepts crypto payments.\n Price goes up 200$",
-	6: "A book was published about your cryptocurrency.\n price goes up 5$",
-	7: "easy card 7.\n price goes up 5$",
-	8: "easy card 8.\n price goes up 5$",
-	9: "easy card 9.\n price goes up 5$",
+	1: "A news report about your coin is published\nYour coin price goes up by 10$",
+	2: "A new ASIC came out for your blockchain\n You gain 1 miner",
+	3: "2 orphan blocks were just mined on your chain\n Your height goes down by 1",
+	4: "Your average block time was too quick\n Difficulty goes up by 10",
+	5: "Unfavorable tax laws were just drafted\n Your coin price goes down 20$",
+	6: "A book was published about your cryptocurrency.\n 50$",
+	7: "A fire broke out at a mining facility\n You loose 1 miner",
+	8: "For no explanable reason your price drops 30$",
+	9: "The last 3 blocks were mined quicker than usual, your block height has increased by 3",
 }
 
 let round2 = {
-	1: "Your blockchain experiences a hard fork.\n Price goes down 1000$",
+	1: "Your blockchain experiences a controversial hard fork.\n Price goes down 100$",
 	2: "Floods wipe out mining equipment factory.\n You loose a miner.",
-	3: "Your blockchain experienced a halvening.\n Price goes up 3000$",
+	3: "Your blockchain experienced a halvening.\n Price goes up 300$",
 	4: "You just had 10 block long orphan chain.\n you loose 2 miners",
-	5: "hard card 5.\n Price goes down 500$",
-	6: "hard card 6.\n Price goes down 500$",
-	7: "hard card 7.\n Price goes down 500$",
-	8: "hard card 8.\n Price goes down 500$",
-	9: "hard card 9.\n Price goes down 500$",
+	5: "Somebody just attacked your blockchain.\n The price goes down 100$",
+	6: "For some unknown reason your \ncoins price increases by 500$",
+	7: "All the miners mining your coin \nhave been arrested. Only 1 remains",
+	8: "Your coin has become popular and \neverybody wants to mine it. Gain 10 miners",
+	9: "You've been pump and dumped. \nYour price drops 500$ because of the fallout",
 }
 
 export function cardPull(round, card) {
