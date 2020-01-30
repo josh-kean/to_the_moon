@@ -1,0 +1,44 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- task: CmdLine@2
+  inputs:
+    script: | 
+      curl -f -L https://static.rust-lang.org/rustup.sh -O
+      sh rustup.sh -y
+  displayName: 'Install Rust'
+
+- script: 'echo "##vso[task.setvariable variable=PATH]$PATH:$HOME/.cargo/bin"'
+  displayName: 'Update path'
+
+- script: 'cargo install wasm-pack'
+  displayName: 'Install wasm-pack'
+
+- script: 'wasm-pack build'
+  displayName: 'Build WebAssembly'
+
+- script: 'npm link'
+  displayName: 'npm link'
+  workingDirectory: '$(Build.Repository.LocalPath)/pkg'
+
+- script: |
+    npm install
+    npm link plasma-wasm-rust
+    npm run build
+  displayName: 'npm install and build' 
+  workingDirectory: $(Build.Repository.LocalPath)/www
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.Repository.LocalPath)/www/dist'
+    ArtifactName: 'plasmawasmrust'
+  displayName: 'Publish artifacts'
